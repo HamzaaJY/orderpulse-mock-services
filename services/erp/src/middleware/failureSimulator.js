@@ -4,7 +4,7 @@ const logger = require("../../../../shared/logger");
 
 const erpFailureSimulator = async (req, res, next) => {
   // Skip failure simulation for health and config endpoints
-  if (req.path === "/health" || req.path.startsWith("/config")) {
+  if (req.path.includes("/health") || req.path.includes("/config")) {
     return next();
   }
 

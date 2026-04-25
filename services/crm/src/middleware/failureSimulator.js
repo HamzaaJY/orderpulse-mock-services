@@ -3,7 +3,7 @@ const { error } = require("../../../../shared/responseHelper");
 const logger = require("../../../../shared/logger");
 
 const crmFailureSimulator = async (req, res, next) => {
-  if (req.path === "/health" || req.path.startsWith("/config")) {
+  if (req.path.includes("/health") || req.path.includes("/config")) {
     return next();
   }
 

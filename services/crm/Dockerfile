@@ -1,12 +1,16 @@
 FROM node:18-alpine
+WORKDIR /build 
 
-WORKDIR /app
+# 1. Copy shared folder
+COPY shared/ ./shared/
 
-COPY package*.json ./
-RUN npm install --production
+# 2. Copy CRM specific files and install
+COPY services/crm/package*.json ./services/crm/
+RUN cd services/crm && npm install --production
 
-COPY . .
+# 3. Copy CRM source code
+COPY services/crm/ ./services/crm/
 
+WORKDIR /build/services/crm
 EXPOSE ${PORT}
-
 CMD ["node", "src/app.js"]

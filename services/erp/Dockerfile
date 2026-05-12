@@ -1,20 +1,14 @@
 FROM node:18-alpine
-
 WORKDIR /app
 
-# 1. Copy the shared folder from the project root
-# This ensures shared/ utility files are available to the service
+# Recreate the exact path structure so ../../../ works
 COPY shared/ ./shared/
+COPY services/erp/package*.json ./services/erp/
+RUN cd services/erp && npm install --production
 
-# 2. Copy package files from the ERP service folder
-COPY services/erp/package*.json ./
-RUN npm install --production
+COPY services/erp/ ./services/erp/
 
-# 3. Copy the ERP source code
-COPY services/erp/ ./
-
-# 4. Expose the port (Render uses the PORT env var)
+# Tell the container to start from the nested src
+WORKDIR /app/services/erp
 EXPOSE ${PORT}
-
-# 5. Start the application
 CMD ["node", "src/app.js"]

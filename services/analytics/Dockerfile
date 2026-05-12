@@ -1,12 +1,20 @@
 FROM node:18-alpine
+WORKDIR /build 
 
-WORKDIR /app
+# 1. Copy the shared folder first
+COPY shared/ ./shared/
 
-COPY package*.json ./
-RUN npm install --production
+# 2. Setup the Analytics directory structure
+COPY services/analytics/package*.json ./services/analytics/
+RUN cd services/analytics && npm install --production
 
-COPY . .
+# 3. Copy Analytics source code
+COPY services/analytics/ ./services/analytics/
+
+# 4. Set the workdir to the actual service folder
+WORKDIR /build/services/analytics
 
 EXPOSE ${PORT}
 
+# Start the service
 CMD ["node", "src/app.js"]
